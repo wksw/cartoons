@@ -25,7 +25,7 @@ do
 	title=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F 'pageTitle' '{print $2}'|awk -F ';' '{print $1}' |awk -F '=' '{print $2}')
 	FROM=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F 'nextChapterData' '{print $2}' |awk -F ',' '{print $1}' |awk -F ':' '{print $2}' | sed s/[[:space:]]//g)
 	CHAPTERIMAGES="${CHAPTERIMAGES}{title:${title},chapterpath:${chapterPath},chapterImages:${chapterImages}},"
-	if [ "$FROM" = "null" ];then
+	if [ "$FROM" = "null" -o "$FROM"x = ""x ];then
 		break;
 	fi
 done
