@@ -19,7 +19,9 @@ do
 		name=$(echo $p |awk -F '/' '{print $(NF-1)}')
 		from=$(echo $cartoon | awk -F '<ul id="chapter-list-4"' '{print $2}'|awk -F '.html' '{print $1}'|awk -F '/' '{print $NF}')
 		echo $name $from
-		/bin/bash cartoon.sh $name $from &
+		if [ "$name"x != ""x -a "$from"x != ""x ];then
+			/bin/bash cartoon.sh $name $from &
+		fi
 	done
 	wait
 done

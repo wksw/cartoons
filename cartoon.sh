@@ -1,8 +1,16 @@
 #!/bin/bash
 
 ROOTDIR=$(cd $(dirname $0);pwd)
-NAME=${1:-'jushuowoshiwangdenver'}
-FROM=${2:-175440}
+NAME=$1
+FROM=$2
+
+if [ "$FROM"x = ""x -o "$NAME"x = ""x ];then
+	echo '
+Useage:
+	/bin/bash ./cartoon.sh <name> <from>
+'
+	exit
+fi
 
 rm -rf $ROOTDIR/$NAME
 mkdir -p $ROOTDIR/$NAME
