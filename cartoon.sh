@@ -13,7 +13,6 @@ Useage:
 fi
 
 rm -rf $ROOTDIR/$NAME
-mkdir -p $ROOTDIR/$NAME
 
 CHAPTERIMAGES='['
 
@@ -32,6 +31,7 @@ done
 
 CHAPTERIMAGES="${CHAPTERIMAGES}]"
 
+mkdir -p $ROOTDIR/$NAME
 cat << EOF > $ROOTDIR/$NAME/index.html
 <html>
 <head>
