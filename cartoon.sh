@@ -18,19 +18,25 @@ CHAPTERIMAGES='['
 
 while true
 do
+    if [ "$FROM"x = ""x ];then
+        break
+    fi
 	html=$(curl -s https://www.36mh.com/manhua/$NAME/${FROM}.html)
 	chapterPath=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}'  |awk -F ';' '{print $6}' |awk -F '=' '{print $2}' | sed s/[[:space:]]//g)
 	chapterImages=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F ';' '{print $5}' |awk -F '=' '{print $2}' | sed s/[[:space:]]//g)
 	title=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F 'pageTitle' '{print $2}'|awk -F ';' '{print $1}' |awk -F '=' '{print $2}')
 	FROM=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F 'nextChapterData' '{print $2}' |awk -F ',' '{print $1}' |awk -F ':' '{print $2}' | sed s/[[:space:]]//g)
 	CHAPTERIMAGES="${CHAPTERIMAGES}{title:${title},chapterpath:${chapterPath},chapterImages:${chapterImages}},"
-	if [ "$FROM" = "null" -o "$FROM"x = ""x ];then
+	if [ "$FROM" = "null" ];then
 		break;
 	fi
 done
 
 CHAPTERIMAGES="${CHAPTERIMAGES}]"
 
+if [ "$CHAPTERIMAGES" = "[]" ];then
+    exit 0
+fi
 mkdir -p $ROOTDIR/$NAME
 cat << EOF > $ROOTDIR/$NAME/index.html
 <html>
