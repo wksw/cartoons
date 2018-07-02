@@ -26,7 +26,7 @@ do
 	chapterImages=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F ';' '{print $5}' |awk -F '=' '{print $2}' | sed s/[[:space:]]//g)
 	title=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F 'pageTitle' '{print $2}'|awk -F ';' '{print $1}' |awk -F '=' '{print $2}')
 	FROM=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F 'nextChapterData' '{print $2}' |awk -F ',' '{print $1}' |awk -F ':' '{print $2}' | sed s/[[:space:]]//g)
-	CHAPTERIMAGES="${CHAPTERIMAGES}{title:${title},chapterpath:${chapterPath},chapterImages:${chapterImages}},"
+	CHAPTERIMAGES="${CHAPTERIMAGES}{title:${title:-'""'},chapterpath:${chapterPath},chapterImages:${chapterImages}},"
 	if [ "$FROM" = "null" ];then
 		break;
 	fi
@@ -41,6 +41,7 @@ mkdir -p $ROOTDIR/$NAME
 cat << EOF > $ROOTDIR/$NAME/index.html
 <html>
 <head>
+<meta charset="UTF-8">
 
 <style type="text/css">
 body {
@@ -60,6 +61,7 @@ button {
 
 <script >
 
+var name="$NAME"
 var thisPage = 0
 var chapterImages = $CHAPTERIMAGES
 
@@ -71,7 +73,10 @@ function nextChapter() {
     var html = show(thisPage)
     document.getElementById("content").innerHTML=html;
     window.scrollTo(0,0);
-    localStorage.setItem("chapter", thisPage)
+    var storage = localStorage.getItem("chapter") || "{}"
+    var storage_json = JSON.parse(storage)
+    storage_json.$NAME = thisPage
+    localStorage.setItem("chapter", JSON.stringify(storage_json))
 }
 
 function prevChapter() {
@@ -82,7 +87,10 @@ function prevChapter() {
     var html = show(thisPage)
     document.getElementById("content").innerHTML=html;
     window.scrollTo(0,0);
-    localStorage.setItem("chapter", thisPage)
+    var storage = localStorage.getItem("chapter") || "{}"
+    var storage_json = JSON.parse(storage)
+    storage_json.$NAME = thisPage
+    localStorage.setItem("chapter", JSON.stringify(storage_json))
 }
 
 
@@ -95,7 +103,8 @@ function show(index) {
     return html    
 }
 
-var thisPage = localStorage.getItem("chapter") || 0
+var storage = localStorage.getItem("chapter") || "{}"
+var thisPage = JSON.parse(storage).$NAME || 0
 var html = show(thisPage)
 document.getElementById("content").innerHTML=html;
 </script> 
