@@ -21,12 +21,13 @@ do
     if [ "$FROM"x = ""x ];then
         break
     fi
-	html=$(curl -s https://www.36mh.com/manhua/$NAME/${FROM}.html)
+	html=$(curl -s https://www.181mh.com/manhua/$NAME/${FROM}.html)
 	chapterPath=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}'  |awk -F ';' '{print $6}' |awk -F '=' '{print $2}' | sed s/[[:space:]]//g)
 	chapterImages=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F ';' '{print $5}' |awk -F '=' '{print $2}' | sed s/[[:space:]]//g)
 	title=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F 'pageTitle' '{print $2}'|awk -F ';' '{print $1}' |awk -F '=' '{print $2}')
 	FROM=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F 'nextChapterData' '{print $2}' |awk -F ',' '{print $1}' |awk -F ':' '{print $2}' | sed s/[[:space:]]//g)
 	CHAPTERIMAGES="${CHAPTERIMAGES}{title:${title:-'""'},chapterpath:${chapterPath},chapterImages:${chapterImages}},"
+    echo "抓取$title"
 	if [ "$FROM" = "null" ];then
 		break;
 	fi
@@ -97,7 +98,7 @@ function prevChapter() {
 function show(index) {
     var html = '<button onclick="nextChapter()">next</button><button onclick="prevChapter()">preview</button><hr><h3>' + index + '(' + chapterImages.length + ')' + ' chapter ' +chapterImages[index].title+ '</h3>'
     for (var i=0; i<chapterImages[index].chapterImages.length;i++) {
-        html += '<img src="' + 'https://img001.yayxcc.com/' + chapterImages[thisPage].chapterpath + chapterImages[thisPage].chapterImages[i] + '">'
+        html += '<img src="' + 'https://img001.1fi4b.cn/' + chapterImages[thisPage].chapterpath + chapterImages[thisPage].chapterImages[i] + '">'
     }
     html += '<hr><button onclick="nextChapter()">next</button><button onclick="prevChapter()">preview</button><h3>' + index + '(' + chapterImages.length + ')' + ' chapter ' +chapterImages[index].title+ '</h3>'
     return html    
