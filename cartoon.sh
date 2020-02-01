@@ -26,13 +26,17 @@ do
 	chapterImages=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F ';' '{print $5}' |awk -F '=' '{print $2}' | sed s/[[:space:]]//g)
 	title=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F 'pageTitle' '{print $2}'|awk -F ';' '{print $1}' |awk -F '=' '{print $2}')
 	FROM=$(echo $html |awk -F '<script>' '{print $3}'|awk -F '</script>' '{print $1}' |awk -F 'nextChapterData' '{print $2}' |awk -F ',' '{print $1}' |awk -F ':' '{print $2}' | sed s/[[:space:]]//g)
-	CHAPTERIMAGES="${CHAPTERIMAGES}{title:${title:-'""'},chapterpath:${chapterPath},chapterImages:${chapterImages}},"
+	CHAPTERIMAGES="${CHAPTERIMAGES}{title:${title:-"\"\""},chapterpath:${chapterPath:-"\"\""},chapterImages:${chapterImages:-"\"\""}},"
     echo "抓取$title"
 	if [ "$FROM" = "null" ];then
 		break;
 	fi
 done
 
+# 如果最后一个字符是逗号，则删掉
+if [ "${CHAPTERIMAGES: -1}" == "," ];then
+    CHAPTERIMAGES=$(echo $CHAPTERIMAGES|sed 's/.$//')
+fi
 CHAPTERIMAGES="${CHAPTERIMAGES}]"
 
 if [ "$CHAPTERIMAGES" = "[]" ];then
